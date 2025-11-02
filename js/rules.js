@@ -1,5 +1,3 @@
-// js/rules.js
-
 /**
  * The Core Rules Engine for the "Nope" URL Sanitizer.
  * This file categorizes URL parameters to allow for intelligent cleaning decisions.
