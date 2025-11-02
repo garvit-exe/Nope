@@ -1,5 +1,3 @@
-// background.js
-
 import { parameterRules } from "./js/rules.js";
 
 const USER_ALLOWLIST_KEY = "userAllowlist";
@@ -33,7 +31,7 @@ function cleanUrl(urlString) {
         const domainAllowlist = parameterRules.allowlist[domain] || new Set();
 
         for (const [key, value] of originalParams.entries()) {
-            // 0. NEW: Check User's Personal Allowlist First
+            // 0. Check User's Personal Allowlist First
             if (userAllowlist.has(key)) {
                 cleanedParams.append(key, value);
                 continue;
@@ -96,30 +94,21 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     chrome.storage.session.remove(tabId.toString());
 });
 
-// Load the user's preferences when the extension first starts up.
-loadUserAllowlist();
-
 // --- Context Menu for Cleaning Links ---
 
-// Create the context menu item when the extension is installed.
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: "nope-clean-link",
         title: "Copy clean link",
-        contexts: ["link"], // This makes it appear only when right-clicking a link.
+        contexts: ["link"],
     });
 });
 
-// Listen for a click on our context menu item.
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    // Check if our menu item was clicked and that there's a link URL.
     if (info.menuItemId === "nope-clean-link" && info.linkUrl) {
-        // Use our existing cleanUrl function to sanitize the link.
         const result = cleanUrl(info.linkUrl);
         const cleanedUrl = result.cleanedUrl;
 
-        // The clipboard API is only available in the context of a tab,
-        // so we execute a small script in the active tab to perform the copy action.
         chrome.scripting
             .executeScript({
                 target: { tabId: tab.id },
@@ -127,9 +116,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
                 args: [cleanedUrl],
             })
             .then(() => {
-                // Optional: Show a brief notification that the link was copied.
-                // This requires the "notifications" permission if you want to add it.
-                // For now, we'll log to the service worker console.
                 console.log(
                     "Nope Extension: Cleaned link copied to clipboard:",
                     cleanedUrl
@@ -144,10 +130,11 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     }
 });
 
-// This function will be injected into the active tab to perform the copy action.
-// It cannot interact with the background script directly, so all data must be passed as arguments.
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).catch((err) => {
         console.error("Could not copy text: ", err);
     });
 }
+
+// Load the user's preferences when the extension first starts up.
+loadUserAllowlist();

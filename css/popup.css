@@ -1,4 +1,3 @@
-/* General Styles & Variables */
 :root {
     --bg-color: #f7f8fa;
     --text-color: #333;
@@ -8,7 +7,6 @@
     --param-bg: #fff;
     --param-key-color: #586069;
 }
-
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         Helvetica, Arial, sans-serif;
@@ -19,12 +17,9 @@ body {
     margin: 0;
     padding: 0;
 }
-
 .container {
     padding: 16px;
 }
-
-/* Header */
 .header {
     display: flex;
     align-items: center;
@@ -32,49 +27,38 @@ body {
     padding-bottom: 12px;
     margin-bottom: 12px;
 }
-
 .header .logo {
     width: 24px;
     height: 24px;
     margin-right: 10px;
 }
-
 .header h1 {
     font-size: 16px;
     font-weight: 600;
     margin: 0;
 }
-
-/* Content & State Views */
 .content {
     text-align: center;
 }
-
 .state-view {
     padding: 10px 0;
 }
-
 .status-message {
     font-size: 16px;
     font-weight: 500;
     margin: 0 0 8px 0;
 }
-
 .status-message.sanitized {
     color: var(--primary-color-sanitized);
 }
-
 .status-message.clean {
     color: var(--primary-color-clean);
 }
-
 .sub-message {
     font-size: 12px;
     color: #6a737d;
     margin: 0;
 }
-
-/* Removed Parameters List */
 .param-list-container {
     max-height: 180px;
     overflow-y: auto;
@@ -82,14 +66,12 @@ body {
     border-radius: 6px;
     background-color: var(--param-bg);
 }
-
 #removed-params-list {
     list-style: none;
     padding: 0;
     margin: 0;
     text-align: left;
 }
-
 .param-item {
     display: flex;
     justify-content: space-between;
@@ -97,27 +79,20 @@ body {
     padding: 8px 12px;
     border-bottom: 1px solid #f0f2f5;
 }
-
 .param-item:last-child {
     border-bottom: none;
 }
-
 .param-key {
     font-weight: 600;
     color: var(--param-key-color);
-    margin-right: 10px;
 }
-
 .param-value {
     color: var(--text-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex-grow: 1;
     text-align: right;
 }
-
-/* Allow Button Styles */
 .allow-button {
     background: none;
     border: 1px solid #007bff;
@@ -130,12 +105,10 @@ body {
     margin-left: 10px;
     transition: all 0.2s ease-in-out;
 }
-
 .allow-button:hover {
     background-color: #007bff;
     color: #fff;
 }
-
 .allow-button:disabled {
     background-color: #e1e4e8;
     color: #959da5;

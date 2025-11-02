@@ -12,14 +12,10 @@
                 <img src="../icons/icon48.png" alt="Nope Icon" class="logo" />
                 <h1>Nope Sanitizer</h1>
             </header>
-
             <div class="content">
-                <!-- This message shows while loading or on special pages -->
                 <div id="initial-state" class="state-view">
                     <p>Loading details for this page...</p>
                 </div>
-
-                <!-- This message shows when no tracking params were found -->
                 <div id="clean-state" class="state-view" style="display: none">
                     <p class="status-message clean">
                         This URL is already clean.
@@ -28,8 +24,6 @@
                         No tracking parameters were found.
                     </p>
                 </div>
-
-                <!-- This view shows when parameters have been removed -->
                 <div
                     id="cleaned-state"
                     class="state-view"
@@ -39,14 +33,11 @@
                         <span id="param-count">0</span> parameters removed.
                     </p>
                     <div class="param-list-container">
-                        <ul id="removed-params-list">
-                            <!-- Removed parameters will be injected here by popup.js -->
-                        </ul>
+                        <ul id="removed-params-list"></ul>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- The script is deferred to ensure the HTML is loaded first -->
         <script src="../js/popup.js" defer></script>
     </body>
 </html>
