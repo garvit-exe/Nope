@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Nope",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An intelligent URL sanitizer that removes tracking junk while keeping useful links intact.",
   "permissions": [
-    "webRequest",
     "storage",
     "contextMenus",
     "activeTab",
-    "scripting"
+    "scripting",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -29,5 +30,14 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
   }
 }

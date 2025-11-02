@@ -1,5 +1,3 @@
-// js/rules.js
-
 export const parameterRules = {
     blocklist: new Set([
         "utm_source",

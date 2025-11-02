@@ -1,5 +1,3 @@
-// js/popup.js
-
 const USER_ALLOWLIST_KEY = "userAllowlist";
 
 function sanitize(str) {
@@ -15,51 +13,22 @@ async function updatePopup(result) {
     const paramCountEl = document.getElementById("param-count");
     const paramsListEl = document.getElementById("removed-params-list");
 
+    // Hide all views initially.
     initialState.style.display = "none";
     cleanState.style.display = "none";
     cleanedState.style.display = "none";
-    paramsListEl.innerHTML = "";
+    paramsListEl.innerHTML = ""; // Clear previous list items.
 
-    if (!result || !result.removedParams || result.removedParams.length === 0) {
+    if (!result || !result.cleaned) {
+        // This is the case where the URL was already clean or no data is available.
         cleanState.style.display = "block";
     } else {
-        const removedCount = result.removedParams.length;
-        paramCountEl.textContent = removedCount;
-
-        result.removedParams.forEach((param) => {
-            const listItem = document.createElement("li");
-            listItem.className = "param-item";
-
-            const contentDiv = document.createElement("div");
-            Object.assign(contentDiv.style, {
-                display: "flex",
-                flexDirection: "column",
-                flexGrow: "1",
-                overflow: "hidden",
-            });
-
-            const keySpan = document.createElement("span");
-            keySpan.className = "param-key";
-            keySpan.textContent = sanitize(param.key);
-
-            const valueSpan = document.createElement("span");
-            valueSpan.className = "param-value";
-            valueSpan.textContent = sanitize(param.value);
-            valueSpan.title = sanitize(param.value);
-
-            const allowButton = document.createElement("button");
-            allowButton.className = "allow-button";
-            allowButton.textContent = "Allow";
-            allowButton.dataset.key = param.key;
-
-            contentDiv.appendChild(keySpan);
-            contentDiv.appendChild(valueSpan);
-            listItem.appendChild(contentDiv);
-            listItem.appendChild(allowButton);
-            paramsListEl.appendChild(listItem);
-        });
-
+        // This is the case where parameters were removed by a rule.
+        // We can't show specifics, so we show a generic success message.
         cleanedState.style.display = "block";
+        document.querySelector("#cleaned-state .status-message").innerHTML =
+            "Tracking parameters removed.";
+        document.querySelector(".param-list-container").style.display = "none"; // Hide the list
     }
 }
 
