@@ -2,6 +2,7 @@ import { parameterRules } from "./js/rules.js";
 
 const USER_ALLOWLIST_KEY = "userAllowlist";
 
+// --- Rules Management ---
 async function updateUserAllowlistRules() {
     const data = await chrome.storage.sync.get(USER_ALLOWLIST_KEY);
     const userAllowlist = new Set(data[USER_ALLOWLIST_KEY] || []);
@@ -39,8 +40,8 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     }
 });
 
+// --- Popup Data Management ---
 chrome.webNavigation.onCompleted.addListener(async (details) => {
-    // FIX 1: Ignore protected URLs to prevent the TypeError
     if (
         details.frameId === 0 &&
         !details.url.startsWith("chrome://") &&
@@ -51,8 +52,6 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
                 await chrome.declarativeNetRequest.getMatchedRules({
                     tabId: details.tabId,
                 });
-
-            // Defensive check to ensure matchedRules and its properties exist
             if (
                 matchedRules &&
                 matchedRules.rules &&
@@ -71,6 +70,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
     }
 });
 
+// --- Context Menu and Clipboard Logic ---
 function cleanUrlForContextMenu(urlString) {
     try {
         const url = new URL(urlString);
@@ -94,6 +94,27 @@ function cleanUrlForContextMenu(urlString) {
     }
 }
 
+async function copyTextToClipboard(text) {
+    // Check if an offscreen document is already available.
+    if (await chrome.offscreen.hasDocument()) {
+        // Document exists, just send a message.
+    } else {
+        // Create the offscreen document.
+        await chrome.offscreen.createDocument({
+            url: "html/offscreen.html",
+            reasons: ["CLIPBOARD"],
+            justification: "Required to reliably copy text to the clipboard.",
+        });
+    }
+
+    // Send the text to the offscreen document to be copied.
+    chrome.runtime.sendMessage({
+        type: "copy-to-clipboard",
+        target: "offscreen",
+        data: text,
+    });
+}
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: "nope-clean-link",
@@ -105,34 +126,14 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === "nope-clean-link" && info.linkUrl) {
-        // FIX 2: Check if the tab can be scripted before trying.
-        if (
-            tab.url.startsWith("chrome://") ||
-            tab.url.startsWith("chrome-extension://")
-        ) {
-            console.warn(
-                "Nope Extension: Cannot copy link on a protected page."
-            );
-            // We can't inject a script, but we can try a different method for newer Chrome versions.
-            // This is a more advanced fallback, but for now, we'll just prevent the error.
-            return;
-        }
-
         const cleanedUrl = cleanUrlForContextMenu(info.linkUrl);
-        chrome.scripting
-            .executeScript({
-                target: { tabId: tab.id },
-                func: (text) => navigator.clipboard.writeText(text),
-                args: [cleanedUrl],
-            })
-            .catch((err) => {
-                // Gracefully catch the scripting error instead of letting it be uncaught
-                console.error(
-                    "Nope Extension Error (onClicked): Could not inject script. This might be a protected page.",
-                    err
-                );
-            });
+        copyTextToClipboard(cleanedUrl);
+        console.log(
+            "Nope Extension: Cleaned link sent to clipboard handler:",
+            cleanedUrl
+        );
     }
 });
 
+// Initial setup
 updateUserAllowlistRules();

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Nope",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "An intelligent URL sanitizer that removes tracking junk while keeping useful links intact.",
   "permissions": [
     "storage",
@@ -10,7 +10,8 @@
     "scripting",
     "declarativeNetRequest",
     "declarativeNetRequestFeedback",
-    "webNavigation"
+    "webNavigation",
+    "offscreen"
   ],
   "host_permissions": [
     "<all_urls>"
